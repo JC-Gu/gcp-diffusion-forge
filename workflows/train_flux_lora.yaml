@@ -1,0 +1,53 @@
+apiVersion: forge/v1
+kind: TrainingJob
+metadata:
+  name: flux-lora-portrait-v1
+  tags: [flux, lora, portrait]
+  description: "FLUX.1-dev LoRA fine-tuning on portrait dataset"
+
+spec:
+  model:
+    architecture: flux
+    base: black-forest-labs/FLUX.1-dev
+    variant: bf16
+
+  training:
+    method: lora
+    loraRank: 32
+    loraAlpha: 32
+    loraTargetModules: [to_q, to_k, to_v, "to_out.0"]
+    steps: 2000
+    batchSize: 4
+    gradientAccumulationSteps: 4
+    learningRate: 1.0e-4
+    lrScheduler: cosine_with_restarts
+    mixedPrecision: bf16
+    gradientCheckpointing: true
+    optimizer:
+      type: adamw8bit
+      weightDecay: 0.01
+
+  data:
+    source: gs://forge-data/datasets/portraits-v2
+    format: webdataset
+    resolution: 1024
+    centerCrop: true
+    captionField: json.caption
+
+  evaluation:
+    everyNSteps: 500
+    metrics: [clip_score, aesthetic_score]
+    samplePrompts:
+      - "a portrait of a person in golden hour lighting"
+      - "close-up portrait, shallow depth of field, film grain"
+
+  resources:
+    gpuType: a100-80gb
+    gpuCount: 4
+    memory: 320Gi
+    spot: true
+
+  output:
+    checkpointDir: gs://forge-checkpoints/flux-lora-portrait-v1
+    pushToHub: false
+    exportFormats: [safetensors]

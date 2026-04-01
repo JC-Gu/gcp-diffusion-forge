@@ -1,0 +1,34 @@
+services:
+  # Fake GCS server — emulates Google Cloud Storage for local dev
+  # Set FORGE_STORAGE_EMULATOR_HOST=http://localhost:4443 in .env
+  gcs-emulator:
+    image: fsouza/fake-gcs-server:latest
+    ports:
+      - "4443:4443"
+    volumes:
+      - ./local-data/gcs:/data
+    command:
+      - "-scheme"
+      - "http"
+      - "-port"
+      - "4443"
+      - "-external-url"
+      - "http://localhost:4443"
+      - "-filesystem-root"
+      - "/data"
+
+  # Prefect v3 server — workflow orchestration UI + API
+  # Access UI at http://localhost:4200
+  prefect-server:
+    image: prefecthq/prefect:3-latest
+    ports:
+      - "4200:4200"
+    command: ["prefect", "server", "start", "--host", "0.0.0.0"]
+    environment:
+      PREFECT_UI_URL: "http://localhost:4200"
+      PREFECT_API_DATABASE_CONNECTION_URL: "sqlite+aiosqlite:////root/.prefect/prefect.db"
+    volumes:
+      - prefect-data:/root/.prefect
+
+volumes:
+  prefect-data:

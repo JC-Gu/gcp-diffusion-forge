@@ -1,0 +1,22 @@
+[project]
+name = "forge-eval"
+version = "0.1.0"
+description = "Evaluation metrics: FID, CLIP score, aesthetic scoring, HPSv2"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "forge-core",
+]
+
+# Heavy eval deps added when implementing eval module:
+# clean-fid>=0.1.35, torchmetrics>=1.6, open_clip_torch>=2.28,
+# lpips>=0.1.4, scipy>=1.14
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forge"]
+
+[tool.uv.sources]
+forge-core = { workspace = true }

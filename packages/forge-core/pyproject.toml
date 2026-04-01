@@ -1,0 +1,19 @@
+[project]
+name = "forge-core"
+version = "0.1.0"
+description = "Shared abstractions: device detection, configuration models, Pydantic settings"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "torch>=2.5,<2.8",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+    "PyYAML>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# Installs as forge/core in site-packages — implicit namespace at forge/ level
+packages = ["src/forge"]

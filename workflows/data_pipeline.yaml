@@ -1,0 +1,51 @@
+apiVersion: forge/v1
+kind: DataJob
+metadata:
+  name: portrait-curation-v2
+  tags: [portraits, curation]
+  description: "Download, filter, and caption a portrait image dataset"
+
+spec:
+  stages:
+    - name: download
+      type: img2dataset
+      params:
+        inputUrlList: gs://forge-raw/portrait-urls.parquet
+        outputDir: gs://forge-data/raw/portraits-v2
+        imageSize: 1024
+        processesCount: 32
+        resizeMode: center_crop
+
+    - name: embed
+      type: clip_embed
+      params:
+        model: ViT-H-14
+        input: gs://forge-data/raw/portraits-v2
+        batchSize: 512
+        outputDir: gs://forge-data/embeddings/portraits-v2
+
+    - name: filter
+      type: quality_filter
+      params:
+        clipSimilarityThreshold: 0.28
+        aestheticScoreThreshold: 4.5
+        minResolution: 512
+        watermarkFilter: true
+        dedup: true
+        input: gs://forge-data/raw/portraits-v2
+        embeddings: gs://forge-data/embeddings/portraits-v2
+        outputDir: gs://forge-data/filtered/portraits-v2
+
+    - name: caption
+      type: recaption
+      params:
+        model: microsoft/Florence-2-large
+        input: gs://forge-data/filtered/portraits-v2
+        outputDir: gs://forge-data/datasets/portraits-v2
+        batchSize: 64
+
+  resources:
+    gpuType: l4
+    gpuCount: 2
+    memory: 64Gi
+    spot: true
