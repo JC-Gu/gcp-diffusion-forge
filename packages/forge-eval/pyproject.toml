@@ -1,15 +1,16 @@
 [project]
 name = "forge-eval"
 version = "0.1.0"
-description = "Evaluation metrics: FID, CLIP score, aesthetic scoring, HPSv2"
+description = "Evaluation metrics: FID, CLIP score, aesthetic scoring"
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "forge-core",
+    "clean-fid>=0.1.35",
+    "pydantic>=2.10",
+    "scipy>=1.14",
+    "torch>=2.5,<2.8",
+    "pillow>=11.0",
 ]
-
-# Heavy eval deps added when implementing eval module:
-# clean-fid>=0.1.35, torchmetrics>=1.6, open_clip_torch>=2.28,
-# lpips>=0.1.4, scipy>=1.14
 
 [build-system]
 requires = ["hatchling"]
