@@ -22,7 +22,7 @@ from forge.core.scorers.clip import CLIPScorer
 
 # ── MLP architecture ──────────────────────────────────────────────────────────
 
-_WEIGHTS_REPO = "christophschuhmann/improved-aesthetic-predictor"
+_WEIGHTS_REPO = "camenduru/improved-aesthetic-predictor"
 _WEIGHTS_FILE = "sac+logos+ava1-l14-linearMSE.pth"
 
 

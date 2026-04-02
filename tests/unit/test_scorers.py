@@ -254,6 +254,6 @@ def test_hf_download_called_with_correct_repo(
         scorer._load()
 
         mock_dl.assert_called_once_with(
-            repo_id="christophschuhmann/improved-aesthetic-predictor",
+            repo_id="camenduru/improved-aesthetic-predictor",
             filename="sac+logos+ava1-l14-linearMSE.pth",
         )
