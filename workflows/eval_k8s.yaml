@@ -1,0 +1,22 @@
+apiVersion: forge/v1
+kind: RunnerJob
+metadata:
+  name: eval-sd-turbo-k8s
+  labels:
+    env: staging
+    team: ml-platform
+runner: eval
+params:
+  modelId: stabilityai/sd-turbo
+  # On k8s: mount GCS bucket via GCS Fuse sidecar, or use a PVC backed by GCS
+  promptsPath: /data/prompts/parti-prompts-1k.txt
+  referenceDir: /data/reference/coco-val-5k/
+  outputDir: /results/eval/sd-turbo/run-001/
+  nImages: 1000
+  batchSize: 8
+  numInferenceSteps: 1
+  guidanceScale: 0.0
+  metrics:
+    - clip_score
+    - aesthetic_score
+    - fid

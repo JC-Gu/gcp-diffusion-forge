@@ -1,0 +1,19 @@
+apiVersion: forge/v1
+kind: RunnerJob
+metadata:
+  name: eval-sd-turbo-local
+runner: eval
+params:
+  modelId: stabilityai/sd-turbo
+  outputDir: /tmp/forge/eval-out
+  # nImages: 20 limits generation for a quick local run
+  # Use promptsPath for larger sets: promptsPath: /data/prompts/parti-100.txt
+  nImages: 20
+  batchSize: 4
+  numInferenceSteps: 1
+  guidanceScale: 0.0
+  metrics:
+    - clip_score
+    - aesthetic_score
+  # Add referenceDir to enable FID:
+  # referenceDir: /data/reference/coco-val/

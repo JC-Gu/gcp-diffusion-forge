@@ -1,0 +1,16 @@
+apiVersion: forge/v1
+kind: RunnerJob
+metadata:
+  name: smoke-sd-turbo-local
+runner: smoke
+params:
+  # For CI use hf-internal-testing/tiny-stable-diffusion-pipe (~30 MB, random weights)
+  # For local dev use stabilityai/sd-turbo (~2 GB, 1-step, production quality)
+  modelId: stabilityai/sd-turbo
+  outputDir: /tmp/forge/smoke-out
+  nImages: 4
+  numInferenceSteps: 1
+  guidanceScale: 0.0
+  metrics:
+    - clip_score
+    - aesthetic_score
