@@ -1,24 +1,30 @@
 [project]
 name = "forge-train"
 version = "0.1.0"
-description = "Training loops: accelerate wrappers, LoRA/DoRA fine-tuning, FSDP2 multi-node"
+description = "Training pipeline for diffusion models: LoRA and DoRA fine-tuning"
 requires-python = ">=3.11,<3.13"
 dependencies = [
     "forge-core",
+    "diffusers>=0.31",
+    "transformers>=4.44",
+    "accelerate>=1.0",
+    "peft>=0.14",
+    "safetensors>=0.4.5",
+    "torch>=2.5,<2.8",
+    "torchvision>=0.20",
+    "pillow>=11.0",
+    "numpy>=1.26",
+    "pyyaml>=6.0",
 ]
-
-# Heavy training deps added when implementing training module:
-# diffusers>=0.32, transformers>=4.47, accelerate>=1.2, peft>=0.14,
-# safetensors>=0.4.5, einops>=0.8, datasets>=3.2, wandb>=0.19
 
 [project.optional-dependencies]
-# Install with: uv sync --extra cuda
 cuda = [
-    # xformers>=0.0.28
-    # bitsandbytes>=0.44
-    # deepspeed>=0.16
-    # flash-attn>=2.7  (requires CUDA toolkit, install separately)
+    "bitsandbytes>=0.44",
+    "xformers>=0.0.28",
 ]
+
+[project.scripts]
+forge-train = "forge.train.pipeline:main"
 
 [build-system]
 requires = ["hatchling"]

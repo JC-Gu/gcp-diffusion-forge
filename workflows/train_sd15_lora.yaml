@@ -1,0 +1,47 @@
+apiVersion: forge/v1
+kind: TrainingJob
+metadata:
+  name: sd15-lora-portraits
+  description: LoRA fine-tuning of SD 1.5 on a portrait dataset
+
+model:
+  architecture: sd15
+  base: runwayml/stable-diffusion-v1-5
+
+training:
+  method: lora
+  loraRank: 16
+  loraAlpha: 16
+  loraTargetModules: ["to_q", "to_k", "to_v", "to_out.0"]
+  steps: 1000
+  batchSize: 2
+  gradientAccumulationSteps: 4   # effective batch = 8
+  learningRate: 1e-4
+  lrScheduler: cosine_with_restarts
+  mixedPrecision: bf16            # auto-overridden to fp16 on MPS, no on CPU
+  gradientCheckpointing: true
+  optimizer:
+    type: adamw8bit               # auto-falls-back to adamw on MPS/CPU
+    weightDecay: 0.01
+
+data:
+  source: /tmp/forge/train-data   # local WebDataset shards (or gs:// on GKE)
+  format: webdataset
+  resolution: 512
+  centerCrop: true
+  captionField: txt               # use .txt field; use json.caption for JSON metadata
+
+evaluation:
+  everyNSteps: 250
+  metrics: [clip_score, aesthetic_score]
+  samplePrompts:
+    - "a portrait of a person smiling"
+    - "a close-up portrait in natural light"
+
+output:
+  checkpointDir: /tmp/forge/checkpoints/sd15-lora-portraits
+  exportFormats: [safetensors]
+
+resources:
+  gpuType: mps       # change to a100-40gb for GKE
+  gpuCount: 1
